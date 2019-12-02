@@ -1,0 +1,667 @@
+Instalaciones Necesarias
+-Google Chrome
+-Postman
+-visual studio code
+	instalar el plugin: html css support
+	instalar el plugin: JavaScript(ES6) code snippets
+	instalar el plugin: js-css-html Formatter
+	instalar el plugin: terminal
+	instalar el plugin: TypeScript Importer
+-git
+-node
+SECCION 2
+¿Que es Node?
+Es javascript del lado del servidor
+Lenguaje de BAckend
+Acceso al sisteema de archivos del equipo
+Informacion del Sistema Operativo
+Procesos del equipo
+utiliza el motor v8
+
+¿Que puedo hacer con Node?
+Uso de Sockets para una comunicacion real Cliente-Servidor
+Manejo de archivos en FileSystem, cargas simultaneas
+Servidores locales y remotos con informacion en tiempo real.
+Conexiones a base de datos
+Creacion de servicios REST en segundos.
+
+¿Por que Node es tan popular?
+Entradas y salidas que no realizan bloqueos del servidor.
+Es sumamente rapido y facil de configurar.
+Mas de 470 mil paquetes disponibles(El ecosistema con mas librerias en el mundo).
+Si sabes JavaScript, ya conoces la mayor parte de Node.
+
+Blocking vs Non Blocking I/O
+Basicamente Blocking ejecuta las tareas una a una
+mientras el Non Blocking ejecuta las tareas en paralelo es decir asincrono.
+
+HOLA MUNDO
+Creamos una carpeta con nombre 01-hola-mundo
+Luego dentro de la carpeta creamos un archivo app.js
+y colocamos estas instrucciones
+
+let nombre= "Eddy";
+console.log('Hola '+nombre);
+console.log(`Hola ${ nombre }`);
+
+luego navegamos a este folder y ejecutamos por consola
+node app.js
+
+Node funciona con tres bloques
+Pila de procesos: Es el main y aca los procesos se ejecutan de manera secuencial
+Node Apis: son procesos los cuales estan a la espera de ejecutarse
+Cola de callback: son los procesos que estaban en la Node Apis y estan pronto a ejecutarse en la pila de procesos.
+
+
+NODEMON
+Paquetes son codigos que han desarrollado otras personas y nos ayudan a funciones especificas.
+Buscamos npm nodemon en el navegador y el siguiente comando es el que debemos ejecutar para instalar nodemon
+npm install -g nodemon
+
+Esta instrucion ejecuta el programa y se queda a la espera de los cambios de la applicacion para volver a ejecutarla
+nodemon app.js 
+
+LET VRS VAR
+El let y el var hacen lo mismo declaran una variable.
+
+VAR
+Al declarar la variable var esta funciona globalmente es decir en cualquier punto del codigo se puede redeclarar y reasignar el valor de la variable.
+
+LET
+Al declarar una variable con let a esta no se puede redeclarar sin embargo el cambio de valor se puede realizar sin ningun problema siempre se llame a la variable por su nombre y sin utilizar la instruccion let delante del nombre pues esto seria una redeclaracion de variable.
+
+El let es lo que mas se utiliza hoy en dia.
+
+
+Template String
+otra forma de escribir y concatenar en la consola y en variables
+
+console.log(nombre+" "+real);
+console.log(`${ nombre } ${ real }`)
+
+function getNombre(){
+	return ` ${ nombre } es ${ real } `;
+}
+console.log(`El nomde de: ${ getNombre() }`);
+
+basicamente utilizando esas pequeñas comillas podemos inyectar javascript
+
+
+DESCTRUCTURACION
+Basicamente es crear varias variables al momento de traer las propiedades de un objeto
+y somos capaces de ponerle alias a dichas variables.
+let deadpool = {
+	nombre: "Wade",
+	apellido: "Winston",
+	poder: "Regeneracion",
+	getNombre: function(){
+		return `${ this.nombre } ${ this.apellido } - poder: ${this.poder} `;
+	}
+};
+
+let { nombre:primerNombre,apellido, poder }=deadpool;
+
+FUNCIONES FLECHA
+Basicamente es un cambio en la sintaxi pero hace exactamente lo mismo que una funcion
+function sumar(a,b){
+	return a + b;
+}
+En flecha de varias lineas
+let sumar = (a,b) =>{
+	return a + b;
+}
+En flecha de una sola linea
+let sumar = (a,b) => a + b;
+
+y la llamada se hace como siempre
+NOTA: en las funciones flechas si no tiene argumentos(parametros) entonces solo se pone los parentesis vacios y si solo tiene un argumento los parentesis son opcionales.
+Para todos los demas siempre van los parentesis.
+
+CallBack
+Es una funcion que se ejecuta despues de que algo sucede
+
+
+let getUsuarioById = (id, callback) => {
+
+	let usuario={
+		nombre:"Eddy",
+		id
+	}
+	callback(usuario);
+}
+
+getUsuarioById(10,(usuario) => {
+	console.log('Usuario de base de datos ', usuario);
+});
+
+Primero se declaro una funcion que recibira dos parametros uno es un dato y el otro es una funcion que se ejecutara luego de algun codigo anterior a ella en la funcion principal
+en el ejemplo anterior primero se declara el objeto y luego se ejecuta la funcion flecha que recibe el usuario(objeto) y para que todo eso pase llamamos a la funcion principal que en este caso es getUsuarioById
+
+Por lo regular en los callback el primer argumento de la funcion callback es el error para que lo maneje por si sucede
+
+Basicamente ¿Como manejar los errores de callback? es por ello que se utiliza el error como el primer argumento 
+Ejemplo
+
+let getUsuarioById = (id, callback) => {
+
+	let usuario={
+		nombre:"Eddy",
+		id
+	}
+	if( id===20 ){
+		callback(`El usuario con id ${ id }, no existe en la BD`);
+	}else{
+		callback(null,usuario);
+	}
+	
+}
+
+getUsuarioById(1,(err,usuario) => {
+	if( err ){
+		return console.log(err);
+	}
+	console.log('Usuario de base de datos ', usuario);
+});
+
+Donde si el valor es difetente de 20 se cumple la condicion es decir no hay error por tanto le pasamos el error como nulo(No entrara en el if del error de la funciona callback) y el usuario para que lo utilice en la funcion callback
+Pero si por el coantrario el id es 20 entonces entratria en la parte del error(por que asi lo hemos definido nosotros como ejemplo) y este no enviaria nulo el error al no enviarlo como nulo el argumento el cual es un mensaje de que no existe el usuario se interpretaria como el error mismo y se imprimiria para luego salir del callback 
+
+NOTA: el callback va estar referenciado en la declaracion de la funcion principal, la salida de la funcion principal es la entrada para el callback, al mandar a llamar a la funcion principal se debe declarar el callbak
+
+un callback puede llamar a otra funciona que ya este declarada con otro callback es decir puede  ser recursivos.Pero al ser recursivos el codigo tiende a complicarse mucho.
+
+PROMESAS
+Las promesas asi como los callbacks nos pueden ayudar a resolver distintas tareas. Las promesas nos permiten ejecutar un trabajo ya sea asincrono o sincrono y despues de que se resuelva el trabajo realizar otro
+
+Una promesa recibe tres callbacks dos referenciados y uno declarado
+
+let getEmpleado=(id)=>{
+	return new Promise( (resolve,reject) =>{
+	let empleadoDB=empleados.find(empleado => empleado.id === id);
+		if(!empleadoDB){
+			reject(`No existe un empleado con el ID ${ id }`)
+		}else{
+			resolve(empleadoDB);
+		}	
+	});	
+}
+
+al llamar a la funcion padre que devuelve la promesa;esta debe declarar las dos promesas que al declarar la funcion padre solo fueron referenciadas.
+el then es la declaracion del resolve
+y el err es la declaracion del err
+getEmpleado(3).then( empleado => {
+	console.log('Empleado de la BD', empleado);
+},(err) =>{
+	console.log(err);
+});
+
+PROMESAS EN CADENA
+Si declaramos dos funciones padres que devuelven una promesa y que asu vez una necesite de la otra podemos encadenar dichar promesas de la siguiente manera
+Declaracion 1
+
+let getEmpleado=(id)=>{
+	return new Promise( (resolve,reject) =>{
+	let empleadoDB=empleados.find(empleado => empleado.id === id);
+		if(!empleadoDB){
+			reject(`No existe un empleado con el ID ${ id }`)
+		}else{
+			resolve(empleadoDB);
+		}	
+	});	
+}
+
+Declaracion 2
+
+let getSalario = (empleado)=>{
+	return new Promise( (resolve, reject)=>{
+		let salarioDB=salarios.find( salario => salario.id === empleado.id)
+	if(!salarioDB){
+		reject(`No se encontro un salario para el usuario ${ empleado.nombre}`);
+	}else{
+		resolve({
+			nombre:empleado.nombre,
+			salario:salarioDB.salario,
+			id: empleado.id});
+	}
+	})
+}
+
+aplicacion de promesas encadenadas
+getEmpleado(5).then( empleado =>{
+	return getSalario(empleado);
+})
+.then(resp =>{
+	console.log(`El salario de ${ resp.nombre } es de ${ resp.salario} `);
+})
+.catch(err =>{
+	console.log(err);
+})
+La primer promesa(primer then) devuelve la segunda funcion padre y si es error salta directamente al catch y si es correcta entonces aplica la
+segunda funciona padre la cual si es verdadera responde con el usuario y salario(segundo then) de lo contrario salta al error
+Nota: el catch maneja ambos errores y mostrata lo que se le envie en el reject de la funcion padre que fallo
+
+
+ASYNC-AWAIT
+La palabra reservada async ademas de declarar una funciona asincrono devuelve una promesa es decir que en lugar de utilizar promesas podemos utilizar funciones asincronas; el awit por otro lado funciona de manera sincrona y se basa en la promesa de un return es decir espera hasta que se le devuelva algo para seguir la ejecucion como su nombre lo indica espera a la respuesta de una funcion asyncrona por ello el await solo puede ser declarado dentro de una funciona asincrona si la funciona no es asincrona entonces el await no puede ser declarado
+
+En las funciones que devuelven promesas si las queremos convertir a funciones asincronas solo debemos eliminar la promesa luego los reject convertirlos en errores y los resolve en returns 
+Ejemplo
+
+Funcion con PROMESA
+
+let getEmpleado=(id)=>{
+	return new Promise( (resolve,reject) =>{
+	let empleadoDB=empleados.find(empleado => empleado.id === id);
+		if(!empleadoDB){
+			reject(`No existe un empleado con el ID ${ id }`)
+		}else{
+			resolve(empleadoDB);
+		}	
+	});	
+}
+
+Funcion con Async(la misma funcion de arriba)
+
+let getEmpleado= async (id)=>{
+	
+	let empleadoDB=empleados.find(empleado => empleado.id === id);
+		if(!empleadoDB){
+			throw new Error(`No existe un empleado con el ID ${ id }`)
+		}else{
+			return empleadoDB;
+		}	
+		
+}
+
+BASES DE NODE
+Requerir paquetes en node
+existen tres tipo de requires y son
+1. librerias que ya vienen por defecto cuando instalamos node
+2. librerias que no vienen por defecto y las requerimos para ello hay que instalarlas primero
+3. archivos que nosotros mismos hemos programado y requerimos por medio de la url
+o direccion en la cual esten en nuestro proyecto
+
+Sintaxis
+const name_var = require('name_library')
+
+MODULE
+En node existe un objeto global llamado "module" y si hacemos un console.log(module) nos muestra la informacion relevante a el.
+
+ Module {
+  id: '.',
+  path: 'D:\\Cursos\\CursoNodeJs\\03-bases-node',
+  exports: {},
+  parent: null,
+  filename: 'D:\\Cursos\\CursoNodeJs\\03-bases-node\\app.js',
+  loaded: false,
+  children: [],
+  paths: [
+    'D:\\Cursos\\CursoNodeJs\\03-bases-node\\node_modules',
+    'D:\\Cursos\\CursoNodeJs\\node_modules',
+    'D:\\Cursos\\node_modules',
+    'D:\\node_modules'
+  ]
+}
+
+objeto global que esta disponible a lo largo de toda la aplicacion y alli se pueden agregar los elementos de forma global
+
+
+Si queremos crear logica en un archivo y luego hacerlo global para que pueda 
+ser requerido desde cualquier otra parte del proyecto debemos exportalos
+Ejemplo
+module.exports = {
+	crearArchivo
+}
+esto lo que hace es exportar el objeto en este caso una funcion crearArchivo 
+y si esta funcion la queremos utilizar en otra parte del proyecto
+
+podemos utilizar destructuracion 
+const { crearArchivo } = require('./multiplicar/multiplicar.js')
+
+PROCESS
+Es una variable entorno que tiene muchisima informacion acerca
+del S.O usuario procesador etc etc
+console.log(process)
+
+con la instruccion anterior podemos ver todo lo que tiene
+en el process existe una variable de argumentos
+
+RECIBIR PARAMETROS DESDE CONSOLA
+process.argv // este comando obtiene los argumentos que le enviamos por consola
+
+Ejemplo
+enviamos como parametro la siguiente variable
+--base=5
+
+node app.js --base=5
+
+si queremos obtener el valor 5 lo hacemos de la siguiente forma
+let argv = process.argv;//toma la variable de entorno process y manda a llamar su array argv que son los argumentos de consola
+let parametro = argv[2];//le decimos que queremos el argumento 2 ya que el 0 y 1 son argumentos por default de node
+let base = parametro.split('=')[1];//luego separamos el string --base=5 por medio de split el cual lo convierte automaticamente en otro array e indicamos que queremos el elemento 1 el cual seria el valor que necesitamos
+console.log(base);//imprimimos el valor
+
+CREAR UN PROYECTO DE NODE 
+npm init // ayuda a la creacion del package.json
+nos va preguntando la informacion acerca de la app
+una de las caracteristicas mas importantes es el 
+entrypoint que es el archivo principal(main)
+
+Package.json contiene toda la informacion acerca de las librerias y dependencias que vamos a utilizar en nuestro 
+proyect
+
+npm i yargs --save//el --save significa que es una dependencia necesaria para que funcione nuestro programa
+
+npm install --save-dev nodemon//significa que solo es una dependencia de desarrollo
+
+DESINSTALAR UN PAQUETE CON NPM
+npm uninstall nodemon//Elimina los paquetes instalados
+
+
+color -npm
+npm install colors --save
+
+Archivos en node
+const fs = require('fs');
+Ejemplo
+ fs.writeFile('db/data.json', data, (err) => {
+        if (err) throw new Error('No se puede grabar', err);
+    });
+/*El writeFile 
+    Primer argumento: nombre y ubicacion del archivo donde se va a guardar
+    De no encontrar el archivo lo crea
+    Segundo argumento: data que se va escribir en el archivo
+    Tercer argumento: error que se debe manejar si no se puede guardar
+    en el archivo*/
+
+Ciclos For en NPM
+1. conociendo el limite
+for(let i=1;i<=limite;i++){
+	console.log(` ${ i }  \n`);
+}
+2. sin conocer el limite
+la variable listado es un array que trae objetos json
+for(let tarea of listado){
+			console.log(tarea.descripcion)
+}
+Yargs: es un paquete mediante el cual podemos definir argumentos y opciones de estos argumentos que se le pasaran 
+a un programa escrito en node mediante la interfaz de comandos 
+Analogia
+pwd // comando de la interfaz de linux
+npm start// comando de la interfaz npm
+node app crear desc Dormir // comando que le pasa el argumento crear con la opcion desc a un programa de node
+
+Como usar Yargs
+1. Primero instalar el paquete yargs
+	npm i yargs --save
+2. Crear un archivo donde definiremos los argumentos que le enviaremos a nuestra aplicacion se recomienda crearlo de la siguiente manera	
+	config/yargs.js
+3. En el documento anterior requerir yargs
+	const argv = require('yargs')
+4. Definir nuestros comandos con sus alias y opciones asi como si tendran help y por ultimo poner el argv
+	.command('crear', 'Crear un elemento por hacer', {
+        descripcion: {
+            demand: true,
+            alias: 'd',
+            desc: 'Descripcion de la tarea por hacer'
+        }
+    })
+	.help()
+    .argv;
+Notas: .command 
+	Recibe como primer parametros el nombre del argumento que recibira nuestra aplicacion en este caso crear
+	Recibe como segundo parametro una descripcion del comando en este caso la descripcion del comando es "Crear un elemento por hacer"
+	Recibe como tercer parametro un objeto con las diferentes opciones que tendra el comando crear en este caso solo tiene una opcion llamada
+	descripcion y se define si es una opcion obligatoria(demand) su alias(d) y una descripcion en este caso de la opciony no del comando
+	.help 
+	indica que al usuario tipear
+	node app --help 
+	podra observar las descripciones de los comandos   
+	.argv
+	indica como vamos a acceder a esos comandos
+Ejemplo del comando definido arriba asumiendo que la aplicacion se llame app
+node app crear -d HolaMundo
+node app: ejecuta el programa
+crear: recibimos un comando
+-d: recibimos una opcion de dicho comando
+HolaMundo es el valor que ha tomado la opcion
+5. exportar todos esos comandos por medio de argv de la siguiente manera
+	module.exports = {
+    argv	
+	}
+6. Requerir el archivo donde definimos todos nuestros comandos
+	const argv = require('./config/yargs').argv;
+6.5 Para obtener el comando  introducidos mediante consola y guardarlos en una variable en el archivo que tendra 
+	la logica descrita en el siguiente paso.
+	let comando = argv._[0];
+6.8 Para obtener el valor de la opcion introducida de un comando como en el del caso anterior(descripcion)
+	argv.descripcion
+7. Crear la logica que se aplicara segun el comando y opciones introducidas  
+	let comando = argv._[0];
+
+switch (comando) {
+    case 'crear':
+        let tarea = porHacer.crear(argv.descripcion);//porHacer es un objeto que se construyo en otro archivo y solo requerimos
+        console.log(tarea);
+        break;
+    case 'listar':
+        let listado = porHacer.getListado();
+        for (let tarea of listado) {
+            console.log('=======Por Hacer========'.green);
+            console.log(tarea.descripcion);
+            console.log('Estado', tarea.completado);
+            console.log('========================='.green);
+        }
+        break
+
+Si no quisieramos configurar comandos si no mas bien solo opciones 
+podremos utilizar la siguiente sintaxis al momento de requerir yargs
+const argv = require('yargs').options({
+    direccion:{
+        alias:'d',
+        desc:'Dirección de la ciudad para obtener el clima',
+        demand:true
+    }
+}).argv;
+
+TAGS de GIT 
+git tag -a v1.0.0 -m "Primera version"
+git push --tags
+
+Luego en github
+reales
+create realese
+
+
+PETICIONES REST
+axios: Trabaja en base a promesas
+request: en base a call backs
+
+Si en una peticion ingresaremos parametros tenemos que utilizar
+un tipo de codificacion para las urls
+esto se hace de la siguiente manera
+const encodedUrl=encodeURI(argv.direccion);
+donde argv.direccion es un argumento que se le introduce a la app
+
+Webserver(http)
+Para crear un web server node ya tiene una libreria predestinada 
+para ello y es http
+
+Ejemplo
+const http = require('http');
+http.createServer((req, res) => {
+        res.write('Hola Mundo');
+        res.end();
+    })
+    .listen(8080);
+
+Variacion del Ejemplo
+const http = require('http');
+http.createServer((req, res) => {
+        res.writeHead(200, { 'Content-type': 'application/json' })
+        let salida = {
+            nombre: 'Eddy',
+            edad: 32,
+            url: req.url
+        }
+        res.write(JSON.stringify(salida));
+        // res.write('Hola Mundo');
+        res.end();
+    })
+    .listen(8080);
+
+Express
+Instalar Express
+npm install express --save
+
+Ejemplo
+const express = require('express');
+const app = express();
+
+app.get('/', function(req, res) {
+    res.send('hello world');
+});
+app.listen(3000)
+
+Variacion del ejemplo
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+    res.send('hello world');
+});
+app.listen(3000)
+
+Ejemplo
+Variacion de http utilizando Express
+no hay que indicarle que es un application json
+lo detecta automaticamente
+
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+    // res.send('hello world');
+    let salida = {
+        nombre: 'Eddy',
+        edad: 32,
+        url: req.url
+    }
+    res.send(salida);
+
+});
+app.listen(3000)
+
+Servir Contenido Estatico
+
+Middleware
+un middleware es un callback que se va a ejecutar siempre
+no importando la direccion que se solicite
+
+Creamos una carpeta llamada public en la raiz del proyecto
+creamos un archivo html
+y luego en el server donde tenemos la ruta creamos un middleware
+app.use(express.static(__dirname + '/public'));
+
+si tenemos un servicio en el que se acceda con /
+debemos comentarlo o cambiarle el nombre 
+el middleware declarado con anterioridad deja la carpeta
+publica para que puedan acceder a ella con solo poner 
+en el navegador localhost:3000/
+
+Si quisieramos mas paginas estaticas solo tendriamos que crear en la 
+carpeta public todos las paginas por ejemplo home.html
+al habe declarado el middleware 
+app.use(express.static(__dirname + '/public'));
+y poner la direccion localhost:3000/ dicho middleware siempre
+buscara un index.html
+si quisieramos acceder al home tendriamos que indicar lo siguiente
+localhost:3000/home.html
+es decir colocar el nombre completo del archivo con su extension.
+
+INSTALAR BOOTSTRAP EN NUESTRO PROYECTO
+npm install bootstrap
+
+Express y Hbs en paginas dinamicas
+Handlebars 
+Realmente vamos a utilizar npm Hbs 
+npm install hbs --save
+
+IMPORTAR HANDLEBARS
+Para utlizar hbs como default engine para renderizar las paginas 
+necesitamos importarlo de la siguiente manera en el server.js
+app.set('view engine','hbs');
+
+Nota: al utilizar express con hbs no es necesario poner la ruta completado
+de los archivos css y js por ejemplo se puede utilizar esto
+<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+en lugar de esto
+<link rel="stylesheet" href="../public/assets/css/bootstrap.min.css">
+
+RENDERIZAR PAGINAS CON EXPRESS
+Para renderizar paginas utilizando hbs solo se debe colocar en la ruta 
+el render ejemplo:
+
+app.get('/', (req, res) => {
+    res.render('home.hbs');
+});
+
+PAGINAS WEB DINAMICAS CON HBS
+utilizamos hbs para hacer variable el contenido de una pagina web por medio de la sintaxis
+<p>{{nombre}</p>
+Para enviarle el contenido variable a la pagina web lo hacemos de la siguiente manera
+app.get('/', (req, res) => {
+    res.render('home',{
+        nombre:'Eddy',
+        anio: new Date().getFullYear()
+    });
+});
+
+Parciales con hbs(Templates)
+Para trabajar con parciales debemos colocar 
+const hbs = require('hbs'); en el archivos server.js
+luego la funcion que registra los parciales con la ubicacion donde se encontraran
+dicho parciales.
+
+hbs.registerPartials(__dirname + '/views/parciales');
+
+Luego en la ruta /views/parciales
+Creamos los archivos que serviran como templates(componentes en react)
+con extension .hbs  dentro de estos archivos colocamos el html correspondiente a los templates
+por ejemplo navbar.hbs
+y para mandar a llamar este template o componente se hace de la siguient manera en el archivo
+donde se quiere mandar a llamar por ejemplo home.hbs 
+se coloca en la parte donde queremos el template  de la siguiente manera
+{{> navbar }}
+es decir hadlebars inmediatamente(sin espacio) mayor que y luego espacio nombre del template
+en este caso navbar.
+
+NODEMON AL PENDIENTE DE OTRO TIPO DE Archivos
+
+nodemon server -e js,hbs,html,css
+Con esto le decimos a nodemon  que este pendiente de archivos cuya extension es la descrita en el comando.
+
+HELPERS
+Es un helpelr es una accion que se dispara cuando el template lo requiere
+Si varias vistas requieren del año para ponerlo en el footer tendriamos que enviarle
+siempre como parametro el año como de la siguiente manera
+app.get('/', (req, res) => {
+    res.render('home',{
+        anio: new Date().getFullYear()
+    });
+});
+
+Para no repetir el mismo codigo entonces creamos un helper y lo declaramos en el server.js
+de la siguiente manera
+hbs.registerHelper('getAnio', () => {
+    return new Date().getFullYear();
+});
+
+dicha funcion 'getAnio' al ser declarada como helper puede ser llamada desde cualquier parte del codigo
+vendria hacer como los objetos estaticos en Java. y asi ya no se lo tendriamos que enviar 
+en cada vista si no mas bien solo mandar a llamar a dicha funcion asi:
+{{getAnio}}
+
+Si creamos un helper llamado capitalizar y este recibe un parametro se declara de la misma forma que el 
+anterior helper pero recibiendo un parametro y cuando se mande a llamar se hace de la siguiente manera
+{{ capitalizar parametro }}
