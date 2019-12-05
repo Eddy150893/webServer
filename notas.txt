@@ -665,3 +665,46 @@ en cada vista si no mas bien solo mandar a llamar a dicha funcion asi:
 Si creamos un helper llamado capitalizar y este recibe un parametro se declara de la misma forma que el 
 anterior helper pero recibiendo un parametro y cuando se mande a llamar se hace de la siguiente manera
 {{ capitalizar parametro }}
+
+Si movemos todos los hbs a un archivo diferente donde solo haya HELPERS
+no es necesario exportarlos.(module.export xxx)
+solo debemos importarlo en el server.js
+
+Deployar en Heroku
+1. Click en new 
+2. Click en crear nueva aplicacacion
+3. Poner nombre a una app
+4. Elegir la region mas cercana a nosotros(USA)
+5. Create app
+6. Click en Heroku Click
+7. Descargamos Heroku Click
+8. Instalar Heroku Click
+9. Ir al proyecto
+10. En el server.js (como no sabemos el puerto que nos va asignar heroku) entonces 
+ponemos
+const port = process.env.PORT || 3000;
+y remplazamos en la linea
+app.listen(3000,()=>{
+	console.log("Escuchando en el puero 3000");
+});
+por estas otras lineas
+app.listen(port,()=>{
+	console.log(`Escuchando en el puero ${port}`);
+});
+11.Como heroku no sabe que comandos se van a ejecutar
+nos vamos al package.json en la parte de scripts
+"scrips":{
+	"start":"node server.js",
+}
+Nota se coloco ese comando ya que asi es como levanta nuestro servidor pero podria
+ser cualquier otro comando como nodemon server.js, etc etc
+12. Crear archivo git ignore e ignorar los node_modules
+Empezamos a trabajar como si fuera git, abrimos una consola y ejecutamos
+13. git add .
+14. git commit -m "primer init"
+15. heroku login
+16. colocamos correo de heroku
+17. contraseña de heroku
+18. heroku git:remote -a <nombre de app del paso 3>
+19. git push heroku master
+20. Luego heroku nos provee el link
