@@ -3,7 +3,10 @@ const app = express();
 //Requerir hbs
 const hbs = require('hbs');
 require('./hbs/helpers')
-    //Esto es un middleware
+
+//Linea de produccion acontinuacion
+const port = process.env.PORT || 3000;
+//Esto es un middleware
 app.use(express.static(__dirname + '/public'));
 //Epress HBS engine
 hbs.registerPartials(__dirname + '/views/parciales');
@@ -31,6 +34,11 @@ app.get('/about', (req, res) => {
 app.get('/data', (req, res) => {
     res.send('hello world');
 });
-app.listen(3000, () => {
-    console.log("Escuchando peticiones en el puerto 3000")
-})
+//Linea de desarrollo
+// app.listen(3000, () => {
+//     console.log("Escuchando peticiones en el puerto 3000")
+// })
+
+app.listen(port, () => {
+    console.log(`Escuchando en el puero ${port}`);
+});
